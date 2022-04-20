@@ -41,23 +41,14 @@ const game = new Phaser.Game(config);
 
 gameScene.update = function () {
 	const cursors = this.input.keyboard.createCursorKeys();
+	const player = this.player;
+	const enemy = this.enemy;
 
-	if (cursors.left.isDown) {
-		this.player.setVelocityX(-160);
-		this.player.flipX = true;
-	} else if (cursors.right.isDown) {
+	if (cursors.space.isDown) {
 		this.player.setVelocityX(160);
 		this.player.flipX = false;
 	} else {
 		this.player.setVelocityX(0);
-	}
-
-	if (cursors.up.isDown) {
-		this.player.setVelocityY(-160);
-	} else if (cursors.down.isDown) {
-		this.player.setVelocityY(160);
-	} else {
-		this.player.setVelocityY(0);
 	}
 
 	if (this.enemy.y == 332) {
@@ -73,20 +64,13 @@ gameScene.update = function () {
 	}
 
 	this.physics.collide(this.player, this.enemy, gameOver);
+
+	function gameOver() {
+		player.setPosition(50, centerY);
+		player.setVelocityX(0);
+		player.setVelocityY(0);
+		enemy.setPosition(centerX, centerY);
+		enemy.setVelocityY(200);
+		enemy.setVelocityX(0);
+	}
 };
-
-function gameOver() {
-	let allSprites = gameScene.children.list.filter(
-		(x) => x instanceof Phaser.GameObjects.Sprite
-	);
-
-	allSprites.forEach((x) => x.destroy());
-
-	gameScene.cameras.main.setRoundPixels(true);
-
-	const loseText = gameScene.add.text(centerX, centerY, "You Died!");
-	loseText.setPosition(
-		centerX - loseText.width / 2,
-		centerY - loseText.height / 2
-	);
-}
