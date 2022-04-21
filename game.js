@@ -1,76 +1,25 @@
+import Menu from "./Menu.js";
+import Level1 from "./Level1.js";
+import LevelScreen from "./LevelScreen.js";
+
 const gameW = 640;
 const gameH = 360;
 
 const centerX = gameW / 2;
 const centerY = gameH / 2;
 
-const gameScene = new Phaser.Scene("Game");
-
-gameScene.preload = function () {
-	this.load.image("background", "assets/background.png");
-	this.load.image("player", "assets/player.png");
-	this.load.image("enemy", "assets/dragon.png");
-};
-
-gameScene.create = function () {
-	bg = this.add.sprite(centerX, centerY, "background");
-	this.player = this.physics.add.sprite(50, centerY, "player");
-	this.player.setCollideWorldBounds(true);
-	this.player.scale = 0.75;
-	this.enemy = this.physics.add.sprite(centerX, centerY, "enemy");
-	this.enemy.scale = 0.8;
-	this.enemy.setCollideWorldBounds(true);
-	this.enemy.setVelocityY(200);
-};
-
 const config = {
 	type: Phaser.AUTO,
 	width: gameW,
 	height: gameH,
-	scene: gameScene,
+	scene: [Menu, LevelScreen, Level1],
 	physics: {
 		default: "arcade",
 		arcade: {
-			gravity: { y: 0 },
+			gravity: { y: 10 },
 			debug: false,
 		},
 	},
 };
 
 const game = new Phaser.Game(config);
-
-gameScene.update = function () {
-	const cursors = this.input.keyboard.createCursorKeys();
-	const player = this.player;
-	const enemy = this.enemy;
-
-	if (cursors.space.isDown) {
-		this.player.setVelocityX(160);
-		this.player.flipX = false;
-	} else {
-		this.player.setVelocityX(0);
-	}
-
-	if (this.enemy.y == 332) {
-		this.enemy.setVelocityY(-200);
-	} else if (this.enemy.y == 28) {
-		this.enemy.setVelocityY(200);
-	}
-
-	if (this.player.x > this.enemy.x) {
-		this.enemy.flipX = false;
-	} else {
-		this.enemy.flipX = true;
-	}
-
-	this.physics.collide(this.player, this.enemy, gameOver);
-
-	function gameOver() {
-		player.setPosition(50, centerY);
-		player.setVelocityX(0);
-		player.setVelocityY(0);
-		enemy.setPosition(centerX, centerY);
-		enemy.setVelocityY(200);
-		enemy.setVelocityX(0);
-	}
-};
