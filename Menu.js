@@ -49,5 +49,7 @@ export default class Menu extends Phaser.Scene {
 
 		this.playTxt.setInteractive();
 		this.playTxt.on("pointerdown", playClicked);
+
+		localStorage.setItem("deaths", 0);
 	}
 }

@@ -18,6 +18,8 @@ export default class LevelScreen extends Phaser.Scene {
 	create() {
 		this.cameras.main.setBackgroundColor("#2da3c6");
 
+		localStorage.setItem("deaths", 0);
+
 		const offset = 50;
 
 		const lvlClicked = (lvl) => {

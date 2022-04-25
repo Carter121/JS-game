@@ -1,16 +1,14 @@
-export default class Level1 extends Phaser.Scene {
+export default class Level4 extends Phaser.Scene {
 	constructor() {
-		super("level1");
-		if (localStorage.getItem("deaths")) {
-			this.deaths = localStorage.getItem("deaths");
-		} else {
-			this.deaths = 0;
-		}
+		super("level4");
+		this.deaths = localStorage.getItem("deaths");
 		this.score = 0;
 		this.gameW = 640;
 		this.gameH = 360;
 		this.centerX = this.gameW / 2;
 		this.centerY = this.gameH / 2;
+		this.velocity = 250;
+		this.step = 60;
 	}
 
 	preload() {
@@ -36,23 +34,39 @@ export default class Level1 extends Phaser.Scene {
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
 		this.player.scale = 0.75;
-		this.enemy = this.physics.add.sprite(this.centerX, this.centerY, "enemy");
-		this.enemy.scale = 0.8;
-		this.enemy.setCollideWorldBounds(true);
-		this.enemy.setVelocityY(200);
 
-		this.deathTxt = this.add.bitmapText(
+		this.enemies = this.physics.add.group({
+			key: "enemy",
+			repeat: 3,
+			setXY: {
+				x: this.centerX - 160,
+				y: this.centerY,
+				stepX: 80,
+			},
+		});
+
+		this.enemies.getChildren().forEach((enemy) => {
+			enemy.setVelocityY(this.velocity);
+			enemy.setCollideWorldBounds(true);
+			enemy.scale = 0.8;
+		});
+
+		for (let i = 0; i < this.enemies.getChildren().length; i++) {
+			this.enemies.getChildren()[i].setVelocityY(this.velocity + this.step * i);
+		}
+
+		this.deathsTxt = this.add.bitmapText(
 			10,
 			this.gameH - 35,
 			"carrier_command",
-			`Deaths: ${this.deaths}`,
+			`Deaths: ${localStorage.getItem("deaths")}`,
 			20
 		);
 		this.title = this.add.bitmapText(
 			this.centerX,
 			5,
 			"carrier_command",
-			"Level 1",
+			"Level 4",
 			20
 		);
 		this.title.setPosition(this.title.x - this.title.width / 2, this.title.y);
@@ -60,10 +74,11 @@ export default class Level1 extends Phaser.Scene {
 
 	update() {
 		const cursors = this.input.keyboard.createCursorKeys();
-		const player = this.player;
-		const enemy = this.enemy;
-		const deathTxt = this.deathTxt;
-		const treasure = this.treasure;
+		const deathsTxt = this.deathsTxt;
+		const velocity = this.velocity;
+		const step = this.step;
+
+		this.deaths = localStorage.getItem("deaths");
 
 		if (cursors.left.isDown) {
 			this.player.setVelocityX(-160);
@@ -83,26 +98,28 @@ export default class Level1 extends Phaser.Scene {
 			this.player.setVelocityY(0);
 		}
 
-		if (this.enemy.y == 332) {
-			this.enemy.setVelocityY(-200);
-		} else if (this.enemy.y == 28) {
-			this.enemy.setVelocityY(200);
-		}
+		for (let i = 0; i < this.enemies.getChildren().length; i++) {
+			if (this.enemies.getChildren()[i].y == 332) {
+				this.enemies.getChildren()[i].setVelocityY(-(velocity + step * i));
+			} else if (this.enemies.getChildren()[i].y == 28) {
+				this.enemies.getChildren()[i].setVelocityY(velocity + step * i);
+			}
 
-		if (this.player.x > this.enemy.x) {
-			this.enemy.flipX = false;
-		} else {
-			this.enemy.flipX = true;
-		}
+			if (this.player.x > this.enemies.getChildren()[i].x) {
+				this.enemies.getChildren()[i].flipX = false;
+			} else {
+				this.enemies.getChildren()[i].flipX = true;
+			}
 
-		this.physics.collide(this.player, this.enemy, () => {
-			this.deaths++;
-			deathTxt.setText(`Deaths: ${this.deaths}`);
-			localStorage.setItem("deaths", this.deaths);
-			this.scene.restart();
-		});
+			this.physics.collide(this.player, this.enemies.getChildren()[i], () => {
+				this.deaths++;
+				deathsTxt.setText(`Deaths: ${this.deaths}`);
+				localStorage.setItem("deaths", this.deaths);
+				this.scene.restart();
+			});
+		}
 		this.physics.collide(this.player, this.treasure, () => {
-			this.scene.start("level2");
+			this.scene.start("level5");
 		});
 	}
 }
