@@ -21,27 +21,28 @@ export default class Level5 extends Phaser.Scene {
 			"assets/carrier_command.png",
 			"assets/carrier_command.xml"
 		);
+		this.load.image("rock", "assets/rock.png");
 	}
 
 	create() {
 		this.bg = this.add.sprite(this.centerX, this.centerY, "background");
 		this.treasure = this.physics.add.sprite(
-			this.gameW - 80,
+			this.gameW - 40,
 			this.centerY,
 			"treasure"
 		);
-		this.treasure.scale = 0.75;
+		this.treasure.scale = 0.5;
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
-		this.player.scale = 0.45;
+		this.player.scale = 0.6;
 
 		this.enemies = this.physics.add.group({
 			key: "enemy",
 			repeat: 4,
 			setXY: {
-				x: this.centerX - 160,
+				x: this.centerX - 170,
 				y: this.centerY,
-				stepX: 80,
+				stepX: 85,
 			},
 		});
 
@@ -70,6 +71,10 @@ export default class Level5 extends Phaser.Scene {
 			20
 		);
 		this.title.setPosition(this.title.x - this.title.width / 2, this.title.y);
+
+		this.walls = this.physics.add.staticGroup();
+		// this.walls.add.rectangle(200, 200, 148, 148, 0x6666ff);
+		this.rect1 = this.add.rectangle(200, 200, 148, 14, 0xffffff);
 	}
 
 	update() {
@@ -119,7 +124,8 @@ export default class Level5 extends Phaser.Scene {
 			});
 		}
 		this.physics.collide(this.player, this.treasure, () => {
-			this.scene.start("level5");
+			this.scene.start("level6");
 		});
+		this.physics.add.collider(this.player, this.walls);
 	}
 }
