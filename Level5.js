@@ -9,11 +9,13 @@ export default class Level5 extends Phaser.Scene {
 		this.centerY = this.gameH / 2;
 		this.velocity = 300;
 		this.step = -20;
+		this.dead = false;
 	}
 
 	preload() {
 		this.load.image("background", "assets/background.png");
 		this.load.image("player", "assets/player.png");
+		this.load.image("dead", "assets/player-dead.png");
 		this.load.image("enemy", "assets/dragon.png");
 		this.load.image("treasure", "assets/treasure.png");
 		this.load.bitmapFont(
@@ -50,6 +52,7 @@ export default class Level5 extends Phaser.Scene {
 			enemy.setVelocityY(this.velocity);
 			enemy.setCollideWorldBounds(true);
 			enemy.scale = 0.7;
+			enemy.setBounce(1);
 		});
 
 		for (let i = 0; i < this.enemies.getChildren().length; i++) {
@@ -71,13 +74,18 @@ export default class Level5 extends Phaser.Scene {
 			20
 		);
 		this.title.setPosition(this.title.x - this.title.width / 2, this.title.y);
-
-		this.walls = this.physics.add.staticGroup();
-		// this.walls.add.rectangle(200, 200, 148, 148, 0x6666ff);
-		this.rect1 = this.add.rectangle(200, 200, 148, 14, 0xffffff);
 	}
 
 	update() {
+		if (this.dead == true) {
+			this.player.setVelocityX(0);
+			this.player.setVelocityY(0);
+			this.enemies.getChildren().forEach((enemy) => {
+				enemy.setVelocityX(0);
+				enemy.setVelocityY(0);
+			});
+			return;
+		}
 		const cursors = this.input.keyboard.createCursorKeys();
 		const deathsTxt = this.deathsTxt;
 		const velocity = this.velocity;
@@ -104,12 +112,6 @@ export default class Level5 extends Phaser.Scene {
 		}
 
 		for (let i = 0; i < this.enemies.getChildren().length; i++) {
-			if (this.enemies.getChildren()[i].y == 335.5) {
-				this.enemies.getChildren()[i].setVelocityY(-(velocity + step * i));
-			} else if (this.enemies.getChildren()[i].y == 24.5) {
-				this.enemies.getChildren()[i].setVelocityY(velocity + step * i);
-			}
-
 			if (this.player.x > this.enemies.getChildren()[i].x) {
 				this.enemies.getChildren()[i].flipX = false;
 			} else {
@@ -117,14 +119,23 @@ export default class Level5 extends Phaser.Scene {
 			}
 
 			this.physics.collide(this.player, this.enemies.getChildren()[i], () => {
-				this.deaths++;
-				deathsTxt.setText(`Deaths: ${this.deaths}`);
-				localStorage.setItem("deaths", this.deaths);
-				this.scene.restart();
+				const cam = this.cameras.main;
+				this.dead = true;
+				this.player.setTexture("dead");
+				cam.pan(this.player.x, this.player.y, 10);
+				cam.setZoom(5);
+				cam.fade(1500);
+				setTimeout(() => {
+					this.deaths++;
+					deathsTxt.setText(`Deaths: ${this.deaths}`);
+					localStorage.setItem("deaths", this.deaths);
+					this.dead = false;
+					this.scene.restart();
+				}, 2000);
 			});
 		}
 		this.physics.collide(this.player, this.treasure, () => {
-			this.scene.start("level6");
+			this.scene.start("win");
 		});
 		this.physics.add.collider(this.player, this.walls);
 	}

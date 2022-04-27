@@ -11,6 +11,7 @@ export default class Level1 extends Phaser.Scene {
 		this.gameH = 360;
 		this.centerX = this.gameW / 2;
 		this.centerY = this.gameH / 2;
+		this.dead = false;
 	}
 
 	preload() {
@@ -18,6 +19,7 @@ export default class Level1 extends Phaser.Scene {
 		this.load.image("player", "assets/player.png");
 		this.load.image("enemy", "assets/dragon.png");
 		this.load.image("treasure", "assets/treasure.png");
+		this.load.image("dead", "assets/player-dead.png");
 		this.load.bitmapFont(
 			"carrier_command",
 			"assets/carrier_command.png",
@@ -59,6 +61,13 @@ export default class Level1 extends Phaser.Scene {
 	}
 
 	update() {
+		if (this.dead == true) {
+			this.player.setVelocityX(0);
+			this.player.setVelocityY(0);
+			this.enemy.setVelocityX(0);
+			this.enemy.setVelocityY(0);
+			return;
+		}
 		const cursors = this.input.keyboard.createCursorKeys();
 		const player = this.player;
 		const enemy = this.enemy;
@@ -96,10 +105,19 @@ export default class Level1 extends Phaser.Scene {
 		}
 
 		this.physics.collide(this.player, this.enemy, () => {
-			this.deaths++;
-			deathTxt.setText(`Deaths: ${this.deaths}`);
-			localStorage.setItem("deaths", this.deaths);
-			this.scene.restart();
+			const cam = this.cameras.main;
+			this.dead = true;
+			cam.pan(this.player.x, this.player.y, 10);
+			cam.setZoom(5);
+			cam.fade(1500);
+			this.player.setTexture("dead");
+			setTimeout(() => {
+				this.deaths++;
+				deathTxt.setText(`Deaths: ${this.deaths}`);
+				localStorage.setItem("deaths", this.deaths);
+				this.dead = false;
+				this.scene.restart();
+			}, 2000);
 		});
 		this.physics.collide(this.player, this.treasure, () => {
 			this.scene.start("level2");

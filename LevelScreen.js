@@ -85,17 +85,5 @@ export default class LevelScreen extends Phaser.Scene {
 
 		this.lvl5.setInteractive();
 		this.lvl5.on("pointerdown", () => lvlClicked(5));
-
-		this.lvl6 = this.add.bitmapText(
-			80,
-			offset * 6,
-			"carrier_command",
-			`Level 6`,
-			8
-		);
-		this.lvl6.setPosition(this.lvl6.x - this.lvl6.width / 2, this.lvl6.y);
-
-		this.lvl6.setInteractive();
-		this.lvl6.on("pointerdown", () => lvlClicked(6));
 	}
 }
