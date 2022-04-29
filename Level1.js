@@ -34,14 +34,15 @@ export default class Level1 extends Phaser.Scene {
 			this.centerY,
 			"treasure"
 		);
-		this.treasure.scale = 0.75;
+		this.treasure.scale = 0.075;
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
-		this.player.scale = 0.75;
+		this.player.scale = 0.025;
 		this.enemy = this.physics.add.sprite(this.centerX, this.centerY, "enemy");
-		this.enemy.scale = 0.8;
+		this.enemy.scale = 0.03;
 		this.enemy.setCollideWorldBounds(true);
 		this.enemy.setVelocityY(200);
+		this.enemy.setBounce(1);
 
 		this.deathTxt = this.add.bitmapText(
 			10,
@@ -90,12 +91,6 @@ export default class Level1 extends Phaser.Scene {
 			this.player.setVelocityY(160);
 		} else {
 			this.player.setVelocityY(0);
-		}
-
-		if (this.enemy.y == 332) {
-			this.enemy.setVelocityY(-200);
-		} else if (this.enemy.y == 28) {
-			this.enemy.setVelocityY(200);
 		}
 
 		if (this.player.x > this.enemy.x) {

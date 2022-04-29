@@ -33,10 +33,10 @@ export default class Level5 extends Phaser.Scene {
 			this.centerY,
 			"treasure"
 		);
-		this.treasure.scale = 0.5;
+		this.treasure.scale = 0.05;
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
-		this.player.scale = 0.6;
+		this.player.scale = 0.015;
 
 		this.enemies = this.physics.add.group({
 			key: "enemy",
@@ -51,7 +51,7 @@ export default class Level5 extends Phaser.Scene {
 		this.enemies.getChildren().forEach((enemy) => {
 			enemy.setVelocityY(this.velocity);
 			enemy.setCollideWorldBounds(true);
-			enemy.scale = 0.7;
+			enemy.scale = 0.03;
 			enemy.setBounce(1);
 		});
 

@@ -32,10 +32,10 @@ export default class Level2 extends Phaser.Scene {
 			this.centerY,
 			"treasure"
 		);
-		this.treasure.scale = 0.75;
+		this.treasure.scale = 0.075;
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
-		this.player.scale = 0.75;
+		this.player.scale = 0.025;
 
 		this.enemies = this.physics.add.group({
 			key: "enemy",
@@ -50,7 +50,8 @@ export default class Level2 extends Phaser.Scene {
 		this.enemies.getChildren().forEach((enemy) => {
 			enemy.setVelocityY(this.velocity);
 			enemy.setCollideWorldBounds(true);
-			enemy.scale = 0.8;
+			enemy.scale = 0.03;
+			enemy.setBounce(1);
 		});
 
 		for (let i = 0; i < this.enemies.getChildren().length; i++) {
@@ -112,14 +113,6 @@ export default class Level2 extends Phaser.Scene {
 		}
 
 		for (let i = 0; i < this.enemies.getChildren().length; i++) {
-			if (this.enemies.getChildren()[i].y == 332) {
-				this.enemies
-					.getChildren()
-					[i].setVelocityY(-(velocity + step * (i + 1)));
-			} else if (this.enemies.getChildren()[i].y == 28) {
-				this.enemies.getChildren()[i].setVelocityY(velocity + step * (i + 1));
-			}
-
 			if (this.player.x > this.enemies.getChildren()[i].x) {
 				this.enemies.getChildren()[i].flipX = false;
 			} else {

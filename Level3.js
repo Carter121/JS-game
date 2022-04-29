@@ -32,10 +32,10 @@ export default class Level3 extends Phaser.Scene {
 			this.centerY,
 			"treasure"
 		);
-		this.treasure.scale = 0.75;
+		this.treasure.scale = 0.075;
 		this.player = this.physics.add.sprite(50, this.centerY, "player");
 		this.player.setCollideWorldBounds(true);
-		this.player.scale = 0.75;
+		this.player.scale = 0.025;
 
 		this.enemies = this.physics.add.group({
 			key: "enemy",
@@ -50,7 +50,8 @@ export default class Level3 extends Phaser.Scene {
 		this.enemies.getChildren().forEach((enemy) => {
 			enemy.setVelocityY(this.velocity);
 			enemy.setCollideWorldBounds(true);
-			enemy.scale = 0.8;
+			enemy.scale = 0.03;
+			enemy.setBounce(1);
 		});
 
 		for (let i = 0; i < this.enemies.getChildren().length; i++) {

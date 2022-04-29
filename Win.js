@@ -29,17 +29,17 @@ export default class Win extends Phaser.Scene {
 			this.mainTxt.y
 		);
 
-		this.playTxt = this.add.bitmapText(
-			this.centerX,
-			250,
-			"carrier_command",
-			`You only had ${this.deaths} deaths`,
-			12
-		);
+		// this.playTxt = this.add.bitmapText(
+		// 	this.centerX,
+		// 	250,
+		// 	"carrier_command",
+		// 	`You only had ${this.deaths} deaths`,
+		// 	12
+		// );
 
-		this.playTxt.setPosition(
-			this.centerX - this.playTxt.width / 2,
-			this.playTxt.y
-		);
+		// 	this.playTxt.setPosition(
+		// 		this.centerX - this.playTxt.width / 2,
+		// 		this.playTxt.y
+		// 	);
 	}
 }
