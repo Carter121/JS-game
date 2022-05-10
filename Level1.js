@@ -15,6 +15,8 @@ export default class Level1 extends Phaser.Scene {
 	}
 
 	preload() {
+		//* load things
+		this.load.audio("theme", "assets/music.mp3");
 		this.load.image("background", "assets/background.png");
 		this.load.image("player", "assets/player.png");
 		this.load.image("enemy", "assets/dragon.png");
@@ -28,6 +30,7 @@ export default class Level1 extends Phaser.Scene {
 	}
 
 	create() {
+		//* make things
 		this.bg = this.add.sprite(this.centerX, this.centerY, "background");
 		this.treasure = this.physics.add.sprite(
 			this.gameW - 80,
@@ -59,9 +62,12 @@ export default class Level1 extends Phaser.Scene {
 			20
 		);
 		this.title.setPosition(this.title.x - this.title.width / 2, this.title.y);
+		this.music = this.sound.add("theme");
+		this.music.play();
 	}
 
 	update() {
+		//* dont move if dead
 		if (this.dead == true) {
 			this.player.setVelocityX(0);
 			this.player.setVelocityY(0);
@@ -75,6 +81,7 @@ export default class Level1 extends Phaser.Scene {
 		const deathTxt = this.deathTxt;
 		const treasure = this.treasure;
 
+		//* movement
 		if (cursors.left.isDown) {
 			this.player.setVelocityX(-160);
 			this.player.flipX = true;
@@ -99,6 +106,7 @@ export default class Level1 extends Phaser.Scene {
 			this.enemy.flipX = true;
 		}
 
+		//* collider
 		this.physics.collide(this.player, this.enemy, () => {
 			const cam = this.cameras.main;
 			this.dead = true;
